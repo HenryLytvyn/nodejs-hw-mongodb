@@ -9,8 +9,6 @@ const PORT = Number(getEnvVar('PORT', 3000));
 export default async function setupServer() {
   const app = express();
 
-  app.use(cors());
-
   app.use(
     pino({
       transport: {
@@ -18,6 +16,8 @@ export default async function setupServer() {
       },
     }),
   );
+
+  app.use(cors());
 
   app.get('/contacts', async (req, res) => {
     const contacts = await getAllContacts();
