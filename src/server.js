@@ -19,7 +19,7 @@ export default async function setupServer() {
     }),
   );
 
-  app.get('/contacts', async (req, res, next) => {
+  app.get('/contacts', async (req, res) => {
     const contacts = await getAllContacts();
 
     res.status(200).json({
@@ -29,7 +29,7 @@ export default async function setupServer() {
     });
   });
 
-  app.get('/contacts/:contactId', async (req, res, next) => {
+  app.get('/contacts/:contactId', async (req, res) => {
     const { contactId } = req.params;
     const contact = await getContactById(contactId);
 
