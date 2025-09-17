@@ -1,0 +1,26 @@
+import { isHttpError } from 'http-errors';
+import { MongooseError } from 'mongoose';
+
+export default async function errorHandler(err, req, res, next) {
+  if (isHttpError(err)) {
+    res.json({
+      status: err.status,
+      message: 'Something went wrong',
+      data: err.message,
+    });
+  }
+
+  if (err instanceof MongooseError) {
+    res.status(500).json({
+      status: 500,
+      message: `Mongoose Error: ${err.message}`,
+      data: err.message,
+    });
+  }
+
+  res.status(500).json({
+    status: 500,
+    message: 'Something went wrong',
+    data: err.message,
+  });
+}
