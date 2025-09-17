@@ -8,3 +8,13 @@ export async function getAllContacts() {
 export async function getContactById(contactId) {
   return await contactsCollection.findById(contactId);
 }
+
+export async function createContactById(payload) {
+  return await contactsCollection.create(payload);
+}
+
+export async function updateContact(contactId, payload) {
+  return await contactsCollection.findByIdAndUpdate(contactId, payload, {
+    new: true,
+  });
+}
