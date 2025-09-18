@@ -23,6 +23,7 @@ export async function getContactByIdController(req, res, next) {
 
   if (!contact) {
     next(createHttpError(404, 'Contact not found'));
+    return;
   }
 
   res.status(200).json({
@@ -34,7 +35,6 @@ export async function getContactByIdController(req, res, next) {
 
 export async function createContactController(req, res, next) {
   const reqData = await req.body;
-  // console.log('req.body: ', reqData);
   let contact;
 
   if (reqData.name && reqData.phoneNumber && reqData.contactType) {
@@ -45,8 +45,6 @@ export async function createContactController(req, res, next) {
       message: 'Successfully created a contact!',
       data: contact,
     });
-
-    return;
   }
 
   next(createHttpError(400, 'The data is invalid!'));
@@ -55,27 +53,30 @@ export async function createContactController(req, res, next) {
 export async function updateContactByIdContoller(req, res, next) {
   const reqBody = await req.body;
   const { contactId } = req.params;
-
-  if (
+  const hasBodyValidData =
     reqBody.name ||
     reqBody.phoneNumber ||
     reqBody.email ||
     reqBody.isFavourite ||
-    reqBody.contactType
-  ) {
-    const contact = await updateContact(contactId, reqBody);
+    reqBody.contactType;
 
-    if (contact) {
-      res.status(200).json({
-        status: 200,
-        message: 'Successfully patched a contact!',
-        data: contact,
-      });
-      return;
-    } else {
-      next(createHttpError(404, 'Contact not found'));
-    }
+  if (!hasBodyValidData) {
+    next(createHttpError(400, 'The data is invalid!'));
+    return;
   }
+
+  const contact = await updateContact(contactId, reqBody);
+
+  if (!contact) {
+    next(createHttpError(404, 'Contact not found'));
+    return;
+  }
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: contact,
+  });
 }
 
 export async function deleteContactByIdController(req, res, next) {
