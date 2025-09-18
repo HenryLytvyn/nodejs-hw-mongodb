@@ -8,6 +8,7 @@ export default async function errorHandler(err, req, res, next) {
       message: 'Something went wrong',
       data: err.message,
     });
+    return;
   }
 
   if (err instanceof MongooseError) {
@@ -16,6 +17,7 @@ export default async function errorHandler(err, req, res, next) {
       message: `Mongoose Error: ${err.message}`,
       data: err.message,
     });
+    return;
   }
 
   res.status(500).json({
