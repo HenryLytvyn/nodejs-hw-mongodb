@@ -53,11 +53,17 @@ export async function createContactController(req, res, next) {
 }
 
 export async function updateContactByIdContoller(req, res, next) {
-  const { name, phoneNumber, email, isFavourite, contactType } = await req.body;
+  const reqBody = await req.body;
   const { contactId } = req.params;
 
-  if (name || phoneNumber || email || isFavourite || contactType) {
-    const contact = await updateContact(contactId);
+  if (
+    reqBody.name ||
+    reqBody.phoneNumber ||
+    reqBody.email ||
+    reqBody.isFavourite ||
+    reqBody.contactType
+  ) {
+    const contact = await updateContact(contactId, reqBody);
 
     if (contact) {
       res.status(200).json({
