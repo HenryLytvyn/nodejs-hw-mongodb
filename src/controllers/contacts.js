@@ -1,6 +1,7 @@
 import createHttpError from 'http-errors';
 import {
   createContactById,
+  deleteContactById,
   getAllContacts,
   getContactById,
   updateContact,
@@ -51,7 +52,7 @@ export async function createContactController(req, res, next) {
   next(createHttpError(400, 'The data is invalid!'));
 }
 
-export async function updateContactContoller(req, res, next) {
+export async function updateContactByIdContoller(req, res, next) {
   const { name, phoneNumber, email, isFavourite, contactType } = await req.body;
   const { contactId } = req.params;
 
@@ -66,7 +67,18 @@ export async function updateContactContoller(req, res, next) {
       });
       return;
     } else {
-      next(createHttpError(404, 'contact not found'));
+      next(createHttpError(404, 'Contact not found'));
     }
+  }
+}
+
+export async function deleteContactByIdController(req, res, next) {
+  const { contactId } = req.params;
+  const isContactDelete = await deleteContactById(contactId);
+
+  if (!isContactDelete) {
+    return next(createHttpError(404, 'Contact not found'));
+  } else {
+    res.status(204).send();
   }
 }

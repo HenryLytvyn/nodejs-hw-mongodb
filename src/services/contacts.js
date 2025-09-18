@@ -18,3 +18,16 @@ export async function updateContact(contactId, payload) {
     new: true,
   });
 }
+
+export async function deleteContactById(contactId) {
+  const contact = await contactsCollection.findById(contactId);
+
+  if (contact) {
+    await contactsCollection.findByIdAndDelete(contactId);
+    const isDelete = true;
+    return isDelete;
+  } else {
+    const isDelete = false;
+    return isDelete;
+  }
+}

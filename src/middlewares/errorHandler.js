@@ -3,7 +3,7 @@ import { MongooseError } from 'mongoose';
 
 export default async function errorHandler(err, req, res, next) {
   if (isHttpError(err)) {
-    res.json({
+    res.status(err.status).json({
       status: err.status,
       message: 'Something went wrong',
       data: err.message,
