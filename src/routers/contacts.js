@@ -3,16 +3,35 @@ import {
   getAllContactsController,
   getContactByIdController,
   createContactController,
-  updateContactByIdContoller,
+  updateContactByIdController,
   deleteContactByIdController,
 } from '../controllers/contacts.js';
+import {
+  createContactValidationSchema,
+  updateContactValidationSchema,
+} from '../validation/contacts.js';
+import validateBody from '../middlewares/validateBody.js';
+import isValidId from '../middlewares/isValidId.js';
 
 const contactsRouter = Router();
 
-contactsRouter.get('/contacts', getAllContactsController);
-contactsRouter.get('/contacts/:contactId', getContactByIdController);
-contactsRouter.post('/contacts', createContactController);
-contactsRouter.patch('/contacts/:contactId', updateContactByIdContoller);
-contactsRouter.delete('/contacts/:contactId', deleteContactByIdController);
+contactsRouter
+  .get('/contacts', getAllContactsController)
+  .post(
+    '/contacts',
+    validateBody(createContactValidationSchema),
+    createContactController,
+  );
+
+contactsRouter
+  .use('/contacts/:contactId', isValidId)
+
+  .get('/contacts/:contactId', getContactByIdController)
+  .patch(
+    '/contacts/:contactId',
+    validateBody(updateContactValidationSchema),
+    updateContactByIdController,
+  )
+  .delete('/contacts/:contactId', deleteContactByIdController);
 
 export default contactsRouter;

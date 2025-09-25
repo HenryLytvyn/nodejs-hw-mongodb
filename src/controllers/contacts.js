@@ -6,9 +6,31 @@ import {
   getContactById,
   updateContact,
 } from '../services/contacts.js';
+import parsePaginationParams from '../utils/parsePaginationParams.js';
+import parseSortParams from '../utils/parseSortParams.js';
+import parseFilterParams from '../utils/parseFilterParams.js';
 
 export async function getAllContactsController(req, res) {
-  const contacts = await getAllContacts();
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
+
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filter,
+  });
+
+  if (!contacts.data.length) {
+    res.status(200).json({
+      status: 200,
+      message: 'There are any contacts!',
+      data: contacts,
+    });
+    return;
+  }
 
   res.status(200).json({
     status: 200,
@@ -50,7 +72,7 @@ export async function createContactController(req, res, next) {
   next(createHttpError(400, 'The data is invalid!'));
 }
 
-export async function updateContactByIdContoller(req, res, next) {
+export async function updateContactByIdController(req, res, next) {
   const reqBody = await req.body;
   const { contactId } = req.params;
   const hasBodyValidData =
