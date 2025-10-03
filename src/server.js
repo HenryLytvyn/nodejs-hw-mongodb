@@ -2,9 +2,10 @@ import express, { json } from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
 import getEnvVar from './utils/getEnvVar.js';
-import contactsRouter from './routers/contacts.js';
+// import contactsRouter from './routers/contacts.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
+import router from './routers/routers.js';
 
 const PORT = Number(getEnvVar('PORT', 3000));
 
@@ -26,7 +27,7 @@ export default async function setupServer() {
     }),
   );
 
-  app.use(contactsRouter);
+  app.use(router);
 
   // Error handling
   app.use(notFoundHandler);
