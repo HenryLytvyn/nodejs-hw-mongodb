@@ -54,15 +54,12 @@ export async function refreshSession({ sessionId, refreshToken }) {
 
   await SessionsCollection.findByIdAndDelete(sessionId);
 
-  const newSession = await createSession(session.user._id);
+  const newSession = await createSession(user._id);
 
   return newSession;
 }
 
 export async function createSession(userId) {
-  //   const isSessionExist = await SessionsCollection.findOne({ userId });
-  //     if (isSessionExist)
-
   const accessToken = randomBytes(30).toString('base64');
   const refreshToken = randomBytes(30).toString('base64');
   const accessTokenValidUntil = new Date(Date.now() + FIFTEEN_MINUTES);
@@ -80,8 +77,12 @@ export async function createSession(userId) {
 }
 
 export async function deleteSession(sessionId) {
-  const session = await SessionsCollection.findById(sessionId);
-  if (!session) throw createHttpError(401, 'Session not found');
+  const isSessionExist = await SessionsCollection.findById(sessionId);
+  if (!isSessionExist) throw createHttpError(401, 'Session not found');
 
   await SessionsCollection.findByIdAndDelete(sessionId);
+}
+
+export async function logoutUser(sessionId) {
+  await deleteSession(sessionId);
 }

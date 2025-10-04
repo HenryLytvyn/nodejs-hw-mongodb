@@ -5,6 +5,7 @@ import getEnvVar from './utils/getEnvVar.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import router from './routers/routers.js';
+import cookieParser from 'cookie-parser';
 
 const PORT = Number(getEnvVar('PORT', 3000));
 
@@ -12,6 +13,7 @@ export default async function setupServer() {
   const app = express();
 
   app.use(cors());
+  app.use(cookieParser());
   app.use(
     json({
       type: ['application/json'],

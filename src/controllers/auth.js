@@ -1,5 +1,10 @@
 import { ONE_MONTH } from '../constants.js';
-import { loginUser, refreshSession, registerUser } from '../services/auth.js';
+import {
+  loginUser,
+  logoutUser,
+  refreshSession,
+  registerUser,
+} from '../services/auth.js';
 
 export async function registerUserController(req, res, next) {
   const newUser = await registerUser(req.body);
@@ -39,12 +44,23 @@ export async function refreshSessionController(req, res) {
 }
 
 async function setupSession(res, session) {
-  res.cookies('sessionId', session._id, {
+  res.cookie('sessionId', session._id, {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_MONTH),
   });
-  res.cookies('refreshToken', session.refreshToken, {
+  res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_MONTH),
   });
+}
+
+export async function logoutUserController(req, res) {
+  if (req.cookies.sessionId) {
+    await logoutUser(req.cookies.sessionId);
+  }
+
+  res.clearCookie('sessionId');
+  res.clearCookie('refreshToken');
+
+  res.status(204).send();
 }
