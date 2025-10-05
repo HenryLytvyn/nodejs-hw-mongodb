@@ -12,10 +12,12 @@ import {
 } from '../validation/contacts.js';
 import validateBody from '../middlewares/validateBody.js';
 import isValidId from '../middlewares/isValidId.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const contactsRouter = Router();
 
 contactsRouter
+  .use(authenticate)
   .get('/contacts', getAllContactsController)
   .post(
     '/contacts',
