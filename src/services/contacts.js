@@ -1,4 +1,4 @@
-import contactsCollection from '../db/models/contact.js';
+import ContactsCollection from '../db/models/contact.js';
 import calculatePaginationData from '../utils/calculatePaginationData.js';
 
 export async function getAllContacts({
@@ -7,11 +7,12 @@ export async function getAllContacts({
   sortBy,
   sortOrder,
   filter,
+  userId,
 }) {
   const limit = perPage;
   const skip = perPage * (page - 1);
 
-  const contactsQuery = contactsCollection.find();
+  const contactsQuery = ContactsCollection.find({ userId });
 
   if (filter.type) {
     contactsQuery.where('contactType').eq(filter.type);
@@ -21,7 +22,7 @@ export async function getAllContacts({
   }
 
   const [contactsCount, contacts] = await Promise.all([
-    contactsCollection.find().merge(contactsQuery).countDocuments(),
+    ContactsCollection.find().merge(contactsQuery).countDocuments(),
 
     contactsQuery
       .skip(skip)
@@ -35,29 +36,49 @@ export async function getAllContacts({
   return { data: contacts, ...paginationData };
 }
 
-export async function getContactById(contactId) {
-  return await contactsCollection.findById(contactId);
+export async function getContactById(contactId, userId) {
+  return await ContactsCollection.findOne({ _id: contactId, userId });
 }
 
-export async function createContactById(payload) {
-  return await contactsCollection.create(payload);
+export async function createContact(contact, userId) {
+  contact.userId = userId;
+  return await ContactsCollection.create(contact);
 }
 
-export async function updateContact(contactId, payload) {
-  return await contactsCollection.findByIdAndUpdate(contactId, payload, {
-    new: true,
+export async function updateContact(contactId, userId, payload) {
+  const isContactExist = await ContactsCollection.findOne({
+    _id: contactId,
+    userId,
   });
+
+  if (!isContactExist) {
+    const isContactUpdate = false;
+    return isContactUpdate;
+  }
+
+  await ContactsCollection.findOneAndUpdate(
+    { _id: contactId, userId },
+    payload,
+    {
+      new: true,
+    },
+  );
+  const isContactUpdate = true;
+  return isContactUpdate;
 }
 
-export async function deleteContactById(contactId) {
-  const contact = await contactsCollection.findById(contactId);
+export async function deleteContactById(contactId, userId) {
+  const isContactExist = await ContactsCollection.findOne({
+    _id: contactId,
+    userId,
+  });
 
-  if (contact) {
-    await contactsCollection.findByIdAndDelete(contactId);
-    const isDelete = true;
-    return isDelete;
-  } else {
+  if (!isContactExist) {
     const isDelete = false;
     return isDelete;
   }
+
+  await ContactsCollection.findOneAndDelete({ _id: contactId, userId });
+  const isDelete = true;
+  return isDelete;
 }
