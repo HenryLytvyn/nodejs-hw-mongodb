@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
 import {
-  createContactById,
+  createContact,
   deleteContactById,
   getAllContacts,
   getContactById,
@@ -14,6 +14,7 @@ export async function getAllContactsController(req, res) {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
   const filter = parseFilterParams(req.query);
+  const userId = req.user._id;
 
   const contacts = await getAllContacts({
     page,
@@ -21,16 +22,8 @@ export async function getAllContactsController(req, res) {
     sortBy,
     sortOrder,
     filter,
+    userId,
   });
-
-  if (!contacts.data.length) {
-    res.status(200).json({
-      status: 200,
-      message: 'There are any contacts!',
-      data: contacts,
-    });
-    return;
-  }
 
   res.status(200).json({
     status: 200,
@@ -41,7 +34,8 @@ export async function getAllContactsController(req, res) {
 
 export async function getContactByIdController(req, res, next) {
   const { contactId } = req.params;
-  const contact = await getContactById(contactId);
+  const userId = req.user._id;
+  const contact = await getContactById(contactId, userId);
 
   if (!contact) {
     next(createHttpError(404, 'Contact not found'));
@@ -56,38 +50,22 @@ export async function getContactByIdController(req, res, next) {
 }
 
 export async function createContactController(req, res, next) {
-  const reqData = await req.body;
-  let contact;
+  const userId = req.user._id;
+  const contact = await createContact(req.body, userId);
 
-  if (reqData.name && reqData.phoneNumber && reqData.contactType) {
-    contact = await createContactById(reqData);
-
-    res.status(201).json({
-      status: 201,
-      message: 'Successfully created a contact!',
-      data: contact,
-    });
-  }
-
-  next(createHttpError(400, 'The data is invalid!'));
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully created a contact!',
+    data: contact,
+  });
 }
 
 export async function updateContactByIdController(req, res, next) {
-  const reqBody = await req.body;
+  const contactDataToUpdate = await req.body;
+  const userId = req.user._id;
   const { contactId } = req.params;
-  const hasBodyValidData =
-    reqBody.name ||
-    reqBody.phoneNumber ||
-    reqBody.email ||
-    reqBody.isFavourite ||
-    reqBody.contactType;
 
-  if (!hasBodyValidData) {
-    next(createHttpError(400, 'The data is invalid!'));
-    return;
-  }
-
-  const contact = await updateContact(contactId, reqBody);
+  const contact = await updateContact(contactId, userId, contactDataToUpdate);
 
   if (!contact) {
     next(createHttpError(404, 'Contact not found'));
@@ -103,7 +81,8 @@ export async function updateContactByIdController(req, res, next) {
 
 export async function deleteContactByIdController(req, res, next) {
   const { contactId } = req.params;
-  const isContactDelete = await deleteContactById(contactId);
+  const userId = req.user._id;
+  const isContactDelete = await deleteContactById(contactId, userId);
 
   if (!isContactDelete) {
     return next(createHttpError(404, 'Contact not found'));
