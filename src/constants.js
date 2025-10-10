@@ -1,3 +1,5 @@
+export const APP_DOMAIN = 'APP_DOMAIN';
+
 export const CONTACT_TYPE = {
   HOME: 'home',
   WORK: 'work',
@@ -16,3 +18,13 @@ export const SORT_BY_DEFAULT = '_id';
 
 export const FIFTEEN_MINUTES = 1000 * 60 * 15;
 export const ONE_MONTH = 1000 * 60 * 60 * 24 * 30;
+
+export const SMTP = {
+  SMTP_HOST: 'SMTP_HOST',
+  SMTP_PORT: 'SMTP_PORT',
+  SMTP_USER: 'SMTP_USER',
+  SMTP_PASSWORD: 'SMTP_PASSWORD',
+  SMTP_FROM: 'SMTP_FROM',
+};
+
+export const JWT_SECRET = 'JWT_SECRET';
