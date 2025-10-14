@@ -105,7 +105,7 @@ export async function requestResetToken(email) {
       sub: user._id,
       email,
     },
-    getEnvVar(JWT_SECRET),
+    JWT_SECRET,
     { expiresIn: '5m' },
   );
 
@@ -115,9 +115,7 @@ export async function requestResetToken(email) {
     from: getEnvVar(SMTP.SMTP_FROM),
     to: email,
     subject: 'Reset your password',
-    html: `<p>Click <a href="http://${getEnvVar(
-      APP_DOMAIN,
-    )}/reset-password?token=${resetPasswordToken}">here</a> to reset your password</p>`,
+    html: `<p>Click <a href="http://${APP_DOMAIN}/reset-password?token=${resetPasswordToken}">here</a> to reset your password</p>`,
   });
 }
 
