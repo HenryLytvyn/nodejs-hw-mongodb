@@ -1,3 +1,4 @@
+import createHttpError from 'http-errors';
 import ContactsCollection from '../db/models/contact.js';
 import calculatePaginationData from '../utils/calculatePaginationData.js';
 
@@ -40,31 +41,25 @@ export async function getContactById(contactId, userId) {
   return await ContactsCollection.findOne({ _id: contactId, userId });
 }
 
-export async function createContact(contact, userId) {
-  contact.userId = userId;
-  return await ContactsCollection.create(contact);
+export async function createContact(newContact, userId) {
+  try {
+    newContact.userId = userId;
+    return await ContactsCollection.create(newContact);
+  } catch {
+    createHttpError(500, 'Error server. Please, try later');
+  }
 }
 
 export async function updateContact(contactId, userId, payload) {
-  const isContactExist = await ContactsCollection.findOne({
-    _id: contactId,
-    userId,
-  });
-
-  if (!isContactExist) {
-    const isContactUpdate = false;
-    return isContactUpdate;
-  }
-
-  await ContactsCollection.findOneAndUpdate(
+  const contact = await ContactsCollection.findOneAndUpdate(
     { _id: contactId, userId },
     payload,
     {
       new: true,
     },
   );
-  const isContactUpdate = true;
-  return isContactUpdate;
+
+  return contact;
 }
 
 export async function deleteContactById(contactId, userId) {
