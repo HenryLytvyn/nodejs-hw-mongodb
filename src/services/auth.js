@@ -11,7 +11,6 @@ import {
 } from '../constants.js';
 import SessionsCollection from '../db/models/session.js';
 import jwt from 'jsonwebtoken';
-import getEnvVar from '../utils/getEnvVar.js';
 import sendEmail from '../utils/sendEmail.js';
 
 export async function registerUser(payload) {
@@ -109,10 +108,8 @@ export async function requestResetToken(email) {
     { expiresIn: '5m' },
   );
 
-  // getEnvVar(email), getEnvVar()
-
   await sendEmail({
-    from: getEnvVar(SMTP.SMTP_FROM),
+    from: SMTP.SMTP_FROM,
     to: email,
     subject: 'Reset your password',
     html: `<p>Click <a href="http://${APP_DOMAIN}/reset-password?token=${resetPasswordToken}">here</a> to reset your password</p>`,
@@ -123,7 +120,7 @@ export async function resetPassword({ token, password }) {
   let entries;
 
   try {
-    entries = jwt.verify(token, getEnvVar(JWT_SECRET));
+    entries = jwt.verify(token, JWT_SECRET);
   } catch {
     throw createHttpError(401, 'Token is expired or invalid.');
   }
