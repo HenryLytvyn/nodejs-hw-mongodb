@@ -67,7 +67,7 @@ export async function logoutUserController(req, res) {
   res.status(204).send();
 }
 
-export async function resetPwdByEmailController(req, res) {
+export async function requestResetPasswordController(req, res) {
   await requestResetToken(req.body.email);
 
   res.status(200).json({
