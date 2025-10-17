@@ -4,8 +4,8 @@ import {
   logoutUserController,
   refreshSessionController,
   registerUserController,
+  requestResetPasswordController,
   resetPasswordController,
-  resetPwdByEmailController,
 } from '../controllers/auth.js';
 import {
   loginUserValidationSchema,
@@ -36,7 +36,7 @@ authRouter.post('/auth/logout', logoutUserController);
 authRouter.post(
   '/auth/send-reset-email',
   validateBody(requestResetEmailSchema),
-  resetPwdByEmailController,
+  requestResetPasswordController,
 );
 
 authRouter.post(
