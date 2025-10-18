@@ -1,14 +1,17 @@
 import { Router } from 'express';
 import {
+  getGoogleOAuthUrlController,
   loginUserController,
+  loginWithGoogleController,
   logoutUserController,
   refreshSessionController,
   registerUserController,
+  requestResetPasswordController,
   resetPasswordController,
-  resetPwdByEmailController,
 } from '../controllers/auth.js';
 import {
   loginUserValidationSchema,
+  loginWithGoogleOAuthSchema,
   registerUserValidationSchema,
   requestResetEmailSchema,
   resetPasswordSchema,
@@ -36,13 +39,21 @@ authRouter.post('/auth/logout', logoutUserController);
 authRouter.post(
   '/auth/send-reset-email',
   validateBody(requestResetEmailSchema),
-  resetPwdByEmailController,
+  requestResetPasswordController,
 );
 
 authRouter.post(
   '/auth/reset-pwd',
   validateBody(resetPasswordSchema),
   resetPasswordController,
+);
+
+authRouter.get('/auth/get-oauth-url', getGoogleOAuthUrlController);
+
+authRouter.post(
+  '/auth/confirm-oauth',
+  validateBody(loginWithGoogleOAuthSchema),
+  loginWithGoogleController,
 );
 
 export default authRouter;
