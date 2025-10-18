@@ -29,6 +29,9 @@ export const CLOUDINARY = {
 
 export const ENABLE_CLOUDINARY = getEnvBool('ENABLE_CLOUDINARY');
 
+export const GOOGLE_AUTH_CLIENT_ID = getEnvVar('GOOGLE_AUTH_CLIENT_ID');
+export const GOOGLE_AUTH_CLIENT_SECRET = getEnvVar('GOOGLE_AUTH_CLIENT_SECRET');
+
 // other variables
 export const CONTACT_TYPE = {
   HOME: 'home',

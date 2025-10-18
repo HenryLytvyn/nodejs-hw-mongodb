@@ -12,6 +12,10 @@ import {
 import SessionsCollection from '../db/models/session.js';
 import jwt from 'jsonwebtoken';
 import sendEmail from '../utils/sendEmail.js';
+import {
+  getFullNameFromGoogleTokenPayload,
+  validateCode,
+} from '../utils/googleOAuth2.js';
 
 export async function registerUser(payload) {
   const isUserExist = await UsersCollection.findOne({ email: payload.email });
@@ -144,4 +148,24 @@ export async function resetPassword({ token, password }) {
   }
 
   await SessionsCollection.findOneAndDelete({ userId: user._id });
+}
+
+export async function loginOrSignUpWithGoogle(code) {
+  const loginTicket = await validateCode(code);
+  const payload = loginTicket.getPayload();
+  if (!payload) throw createHttpError(401);
+
+  let user = UsersCollection.findOne({ email: payload.email });
+  if (!user) {
+    const password = bcrypt.hash(10, 10);
+    const name = getFullNameFromGoogleTokenPayload(payload);
+    user = UsersCollection.create({
+      name,
+      email: payload.email,
+      password,
+    });
+  }
+
+  const session = createSession(user._id);
+  return session;
 }
