@@ -6,6 +6,7 @@ import notFoundHandler from './middlewares/notFoundHandler.js';
 import router from './routers/routers.js';
 import cookieParser from 'cookie-parser';
 import { APP_PORT, UPLOAD_DIR } from './constants.js';
+import swaggerDocs from './middlewares/swaggerDocs.js';
 
 export default async function setupServer() {
   const app = express();
@@ -26,9 +27,11 @@ export default async function setupServer() {
     }),
   );
 
+  app.use('/api-docs', swaggerDocs());
+
   app.use(router);
 
-  app.use('uploads', express.static(UPLOAD_DIR));
+  app.use('/uploads', express.static(UPLOAD_DIR));
 
   // Error handling
   app.use(notFoundHandler);

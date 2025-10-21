@@ -1,0 +1,37 @@
+tags:
+  - Auth
+summary: Get oauth url
+operationId: getOAuthUrl
+description: 'Get the oauth link to login'
+security: []
+responses:
+  '200':
+    description: Successfully sent auth link
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Successfully sent auth link!'
+            data:
+              type: object
+              required:
+                - url
+              properties:
+                url:
+                  description: 'Link to login via google account'
+                  type: string
+                  example: 'https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&access_type=offline&response_type=code&client_id=205447887101-5mk18rmebvchen5usncqi5m2jsjhpr2b.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fconfirm-google-auth'
+  '401':
+    $ref: ../../components/responses/401.yaml
+  '500':
+    $ref: ../../components/responses/500.yaml
