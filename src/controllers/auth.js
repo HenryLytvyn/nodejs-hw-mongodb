@@ -15,7 +15,7 @@ export async function registerUserController(req, res, next) {
 
   res.status(201).json({
     status: 201,
-    message: 'Successfully registered a user!',
+    message: 'User registered successfully!',
     data: newUser,
   });
 }
@@ -84,7 +84,7 @@ export async function resetPasswordController(req, res) {
 
   res.status(200).json({
     status: 200,
-    message: 'Password has been successfully reset.',
+    message: 'Password has been successfully updated.',
     data: {},
   });
 }

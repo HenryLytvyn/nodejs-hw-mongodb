@@ -1,0 +1,46 @@
+tags:
+  - Auth
+summary: Login via google
+operationId: loginByGoogle
+description: 'Login the user via a google account with payload'
+security: []
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - code
+        properties:
+          code:
+            description: 'Temporary authorization code from google'
+            type: string
+            example: '4%2F0AVGzR1CMM9LCHziP7CCcq9uhFVOAc4gJbBYvoWaXViMmMQRq0PV1NqShA8e4k5rzMvjvtQ'
+responses:
+  '200':
+    description: Successfully logged in via Google OAuth
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Successfully logged in via Google OAuth!'
+            data:
+              type: object
+              required:
+                - accessToken
+              properties:
+                accessToken:
+                  type: string
+                  example: 'ppeDHig1jMsKDVrzlclqtr6YwLWijtn+yKPIOSEZ'
+  '401':
+    $ref: ../../components/responses/401.yaml

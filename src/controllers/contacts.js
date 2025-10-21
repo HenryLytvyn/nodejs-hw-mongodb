@@ -70,7 +70,7 @@ export async function createContactController(req, res, next) {
 
   res.status(201).json({
     status: 201,
-    message: 'Successfully created a contact!',
+    message: 'Successfully created the contact!',
     data: contact,
   });
 }
@@ -102,7 +102,7 @@ export async function updateContactByIdController(req, res, next) {
 
   res.status(200).json({
     status: 200,
-    message: 'Successfully patched a contact!',
+    message: 'Successfully updated the contact!',
     data: contact,
   });
 }

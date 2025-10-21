@@ -7,7 +7,7 @@ import {
 } from '../constants.js';
 import createHttpError from 'http-errors';
 
-const PATH_JSON = path.join(process.cwd(), 'google-auth.json');
+const PATH_JSON = path.join(process.cwd(), 'google-oauth.json');
 const oauthConfig = JSON.parse(await fs.readFile(PATH_JSON));
 
 const googleOAuthClient = new OAuth2Client({
@@ -17,11 +17,12 @@ const googleOAuthClient = new OAuth2Client({
 });
 
 export function generateAuthUrl() {
-  googleOAuthClient.generateAuthUrl({
+  return googleOAuthClient.generateAuthUrl({
     scope: [
       'https://www.googleapis.com/auth/userinfo.email',
       'https://www.googleapis.com/auth/userinfo.profile',
     ],
+    access_type: 'offline',
   });
 }
 

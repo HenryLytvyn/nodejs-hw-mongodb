@@ -155,11 +155,11 @@ export async function loginOrSignUpWithGoogle(code) {
   const payload = loginTicket.getPayload();
   if (!payload) throw createHttpError(401);
 
-  let user = UsersCollection.findOne({ email: payload.email });
+  let user = await UsersCollection.findOne({ email: payload.email });
   if (!user) {
     const password = bcrypt.hash(10, 10);
     const name = getFullNameFromGoogleTokenPayload(payload);
-    user = UsersCollection.create({
+    user = await UsersCollection.create({
       name,
       email: payload.email,
       password,
